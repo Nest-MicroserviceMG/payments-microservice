@@ -1,35 +1,39 @@
 import 'dotenv/config';
+
 import * as joi from 'joi';
 
-//para ver como seran las variables de entorno
 interface EnvVars {
   PORT: number;
+
   STRIPE_SECRET: string;
+  STRIPE_SUCCESS_URL: string;
+  STRIPE_CANCEL_UR: string;
+  STRIPE_ENDPOINT_SECRET: string;
 }
 
-//defino el esquema de las variables de entorno para validarlas
 const envsSchema = joi
   .object({
-    PORT: joi.number().required(), //valida que sea un numero,
-    STRIPE_SECRET: joi.string().required(), //valida que sea un string
+    PORT: joi.number().required(),
+
+    STRIPE_SECRET: joi.string().required(),
+    STRIPE_SUCCESS_URL: joi.string().required(),
+    STRIPE_CANCEL_UR: joi.string().required(),
+    STRIPE_ENDPOINT_SECRET: joi.string().required(),
   })
-  .unknown(true); //acepta otras variables que no esten definidas
+  .unknown(true);
 
-//saco el error y el valor de las variables de entorno
-const { error, value } = envsSchema.validate({
-  ...process.env,
-});
+const { error, value } = envsSchema.validate(process.env);
 
-//si hay un error, lanzo un error
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
-//asigno las variables de entorno a una constante
 const envVars: EnvVars = value;
 
-//exporto las variables de entorno
 export const envs = {
   port: envVars.PORT,
-  stripreSecret: envVars.STRIPE_SECRET,
+  stripeSecret: envVars.STRIPE_SECRET,
+  stripeSuccessUrl: envVars.STRIPE_SUCCESS_URL,
+  stripeCancelUrl: envVars.STRIPE_CANCEL_UR,
+  stripeEndpointSecret: envVars.STRIPE_ENDPOINT_SECRET,
 };
